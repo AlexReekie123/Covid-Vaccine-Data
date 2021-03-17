@@ -1,0 +1,115 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <body>
+        <h1>Covid Vaccine Data</h1>
+        <button>
+            
+            <a href="belgiumVaccinationData.html">Belgium Vaccine Data</a>
+        </button>
+        <button>
+           
+            <a href="russiaVaccinationData.html"> Russia Vaccine Data</a>
+        </button>
+
+        
+        <canvas id="myFirstChart" width="400" height="400"></canvas>
+    </body>
+ 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+
+        const getData = async () => {
+            let { length, data } = await axios.get('https://sociepy.org/covid19-vaccination-subnational/data/api/v1/latest/country_by_iso/RU.json')
+            console.log("Here get data")
+            return data
+        }
+
+        document.onreadystatechange = async () => {
+            let covidData = document.getElementsByClassName('coronadata')[0]
+
+
+            if (document.readyState == `complete`) { 
+                console.log("Here")
+                getData()
+                    .then(Data => {
+                        let returnedResults = Data.data.map(datapoint => {
+                            xlabels.push(datapoint.region_name) //during loop will take out each region name
+                            ydata.push(datapoint.total_vaccinations) //this will take the vaccination data 
+                            return `<p>Date: ${datapoint.date} Region: ${datapoint.region_name} Total Vaccinations: ${datapoint.total_vaccinations}</p>`
+                            })
+
+                            // document.getElementsByClassName(`coronadata`).returnedResults.innerHTML +=`Date: ${datapoint.date}`
+                          
+                        console.log(returnedResults)
+
+                    }
+                    )
+            }
+        }
+        const xlabels = []; //Region name
+        const ydata = []; //Total vaccinations
+
+chartIT();
+
+        async function chartIT() {
+            await getData()
+        const ctx = document.getElementById('myFirstChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: xlabels,
+            datasets: [{
+                label: 'Covid-19 Vaccination Data',
+                data: ydata,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        
+    })
+        }
+
+
+
+
+
+// document.addEventListener('DOMContentLoaded', async () => {
+//             console.log("Here!")
+//             const results = await getData()
+//             console.log(results)
+//             const date = results.data[0].date
+//             console.log(`Date: ${date}`)
+//             const totalVaccinations = results.data[0].total_vaccinations
+//             console.log(`Total Vaccinations: ${total_vaccinations}`)
+//             const region = results.data[0].date.region_name
+//             console.log(`Region: ${region_name}`)
+//         })
+// results.data.forEach((element) =>{
+// const printHTML = document.getElementsByClassName(`covidData`)
+// printHTML.innerHTML += `<ul>
+//     <li>Date: ${element.date} </li>
+
+
+//     </ul>`
+
+// })
+    </script>
+
+</body>
+
+</html>
